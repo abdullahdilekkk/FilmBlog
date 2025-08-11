@@ -1,0 +1,8 @@
+.bg-custom {
+  background-image: url("../images/arka_plan.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* ← bu sabitlik sağlar */
+  min-height: 100vh; /* ← en az ekran yüksekliği kadar */
+}

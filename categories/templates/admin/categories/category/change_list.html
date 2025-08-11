@@ -1,0 +1,15 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+  <div class="object-tools">
+    <ul>
+      <li>
+        <form action="sync/" method="post" style="display:inline;">
+          {% csrf_token %}
+          <input type="submit" value="📥 TMDB'den Senkronize Et" class="default">
+        </form>
+      </li>
+    </ul>
+  </div>
+  {{ block.super }}
+{% endblock %}

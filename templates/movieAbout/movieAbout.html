@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ movie.title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body class="text-gray-900 bg-custom min-h-screen flex flex-col">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <a href="{% url 'takmaAdHomePage' %}" class="text-xl font-bold text-blue-800">MovieSite</a>
+    <div class="space-x-6">
+      <a href="{% url 'takmaAdHomePage' %}" class="text-gray-700 hover:text-blue-600 font-medium">Anasayfa</a>
+      <a href="{% url 'categoriesPage' %}" class="text-gray-700 hover:text-blue-600 font-medium">Tüm Filmler</a>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'favorites_list' %}" class="text-gray-700 hover:text-blue-600 font-medium">Favorilerim⭐</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium">Favorilerim⭐</a>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'watchLater' %}" class="text-gray-700 hover:text-blue-600 font-medium">Daha Sonra İzle⏳</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium">Daha Sonra İzle⏳</a>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+          <a href="{% url 'account_page' %}" class="text-gray-700 hover:text-green-600 font-medium">Admin Hesap</a>
+        {% else %}
+          <a href="{% url 'account_page' %}" class="text-gray-700 hover:text-green-600 font-medium">Hesabım</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="text-gray-700 hover:text-red-600 font-medium">Çıkış Yap</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="text-gray-700 hover:text-blue-600 font-medium">Giriş Yap</a>
+        <a href="{% url 'register' %}" class="text-gray-700 hover:text-blue-600 font-medium">Kayıt Ol</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<main class="flex-1">
+  <!-- Film Detay İçeriği -->
+  <div class="max-w-4xl mx-auto mt-10 bg-white shadow rounded-lg overflow-hidden">
+    <div class="flex">
+      <div class="w-1/2">
+        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="" class="w-full h-auto object-contain">
+      </div>
+      <div class="w-1/2 p-6">
+          <h1 class="text-3xl font-bold mb-4">{{ movie.title }}</h1>
+          <p class="text-gray-600 mb-4">{{ movie.overview }}</p>
+          <p class="text-sm text-gray-500 mb-2">Yayın Tarihi: {{ movie.release_date|slice:"8:10" }}.{{ movie.release_date|slice:"5:7" }}.{{ movie.release_date|slice:"0:4" }}</p>
+          <p class="text-gray-600 mb-4">IMDB puanı:{{ movie.vote_average|floatformat:1 }}</p>
+          {% if movie.genres %}
+            <p class="text-sm text-gray-500">
+              Türler:
+              {% for genre in movie.genres %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </p>
+          {% endif %}
+      </div>
+    </div>
+    
+    <div class="p-6 border-t mt-4 flex justify-between items-center flex-wrap gap-4">
+      <a href="{% url 'takmaAdHomePage' %}" class="text-blue-600 hover:underline">← Anasayfaya</a>
+      <div class="flex items-center space-x-4">
+      {% if user.is_authenticated %}
+        <a href="{% url 'add_to_watch_later' movie.id %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          Daha Sonra İzle
+        </a>
+      {% else %}
+        <a href="{% url 'login' %}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          Daha Sonra İzle
+        </a>
+      {% endif %}
+        {% if user.is_authenticated %}
+          <a href="{% url 'add_to_favorites' movie.id %}" class="bg-yellow-400 text-white p-2 rounded-full hover:bg-yellow-500 transition">
+            ⭐Favorilerime Ekle
+          </a>
+        {% else %}
+          <a href="{% url 'login' %}" class="bg-yellow-400 text-white p-2 rounded-full hover:bg-yellow-500 transition inline-block">
+            ⭐Favorilerime Ekle
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+</main>
+
+<footer class="bg-white border-t">
+  <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-700">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <h2 class="font-semibold text-gray-900">Hakkımızda</h2>
+        <p class="mt-1 leading-relaxed">
+          MovieSite, TMDB’den alınan verilerle filmleri keşfetmeni kolaylaştırır. 
+          Favorilerine ekle, daha sonra izle listeni yönet, ve yeni filmlerden haberdar ol.
+        </p>
+      </div>
+      <div class="flex gap-4">
+        <a href="#" class="hover:text-blue-600">İletişim</a>
+        <a href="#" class="hover:text-blue-600">Gizlilik</a>
+        <a href="#" class="hover:text-blue-600">Koşullar</a>
+      </div>
+    </div>
+    <div class="mt-4 text-gray-500">
+      © {{ now|date:"Y" }} MovieSite. Tüm hakları saklıdır.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
